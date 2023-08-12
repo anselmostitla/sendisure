@@ -1,5 +1,7 @@
 import './globals.css'
 import { Inter } from 'next/font/google'
+import { AccountProvider } from '@/context/account'
+
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -11,7 +13,13 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <AccountProvider>
+        <body className={inter.className}>
+          {/* <AccountProvider> */}
+            {children}
+          {/* </AccountProvider> */}
+        </body>
+      </AccountProvider>
     </html>
   )
 }
