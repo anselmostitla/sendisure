@@ -1,7 +1,6 @@
 'use client'
 import { createContext, useContext, useEffect, useState } from "react"
 import { ethers } from 'ethers'
-    
 
 
 const accountContext = createContext()
@@ -12,7 +11,7 @@ export const useAccount = () => {
 export const AccountProvider = ({children}) => {
   const [account, setAccount] = useState()
   const [network, setNetwork] = useState()
-  
+  // const []
 
   const connectWallet = async () => {
     if(!window.ethereum) return
