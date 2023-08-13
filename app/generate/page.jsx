@@ -226,7 +226,8 @@ const Generate = () => {
 
         <div className="flex">
           <div className="pl-5 py-4 outline-none bg-white">
-            www.sendisure.com/
+            {/* www.sendisure.com/ */}
+            https://sendisure.vercel.app/
           </div>     
           <input type="text" placeholder="name or brandname or tagline or favorite phrase" onChange={(e) => (setPersonalRoute(e.target.value), checkAvailability(e))}
           className="pl-0 pr-5 py-4 outline-none w-full text-gray-500"/>
