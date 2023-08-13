@@ -47,7 +47,7 @@ const Generate = () => {
   const [dots, setDots] = useState()
   const [sleepingTime, setSleepingTime ] = useState(1)
 
-  const domain = window.location.origin + "/"
+  const myDomain = window.location.hostname + "/"
 
 
   // This part executes at the begining and after a new smart contract is created
@@ -233,7 +233,7 @@ const Generate = () => {
         <div className="flex">
           <div className="pl-5 py-4 outline-none bg-white">
             {/* www.sendisure.com/ */}
-            {domain}
+            {myDomain}   
           </div>     
           <input type="text" placeholder="name or brandname or tagline or favorite phrase" onChange={(e) => (setPersonalRoute(e.target.value), checkAvailability(e))}
           className="pl-0 pr-5 py-4 outline-none w-full text-gray-500"/>
