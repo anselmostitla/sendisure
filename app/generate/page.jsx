@@ -13,9 +13,12 @@ import Link from "next/link"
 
 
 
+
+
 const Generate = () => {
   const { account, getContract, network } = useAccount()
   const router = useRouter()
+  
 
   const defaultSocials = [{"name":"facebook", "link":"https://www.facebook.com/anselmostitla", "active":false, "placeholder":"https://..." },
                   {"name":"twitter", "link":"", "active":false, "placeholder":"https://..." },
@@ -44,6 +47,8 @@ const Generate = () => {
   const [dots, setDots] = useState()
   const [sleepingTime, setSleepingTime ] = useState(1)
 
+  const domain = window.location.origin + "/"
+
 
   // This part executes at the begining and after a new smart contract is created
   // ****************************************************************************
@@ -52,6 +57,7 @@ const Generate = () => {
       uploadUntilRecentSmartContract()
     },sleepingTime)
   },[toggleNewContractCreated])
+
 
   const uploadUntilRecentSmartContract = async() => { 
     if(account && loading){     
@@ -226,7 +232,8 @@ const Generate = () => {
 
         <div className="flex">
           <div className="pl-5 py-4 outline-none bg-white">
-            www.sendisure.com/
+            {/* www.sendisure.com/ */}
+            {domain}
           </div>     
           <input type="text" placeholder="name or brandname or tagline or favorite phrase" onChange={(e) => (setPersonalRoute(e.target.value), checkAvailability(e))}
           className="pl-0 pr-5 py-4 outline-none w-full text-gray-500"/>
