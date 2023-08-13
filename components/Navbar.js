@@ -6,12 +6,15 @@ import chainId from '../constants/chainId.json'
 import Link from "next/link"
 
 
+
 const Navbar = () => {   
   const {account, network, connectWallet, getSmartContract } = useAccount()
   const [isThereAContract, setIsThereAContract] = useState(false)
+  
 
   useEffect(() => {
     getBasics()
+    
   })
 
   const checkNetwork = async() => {

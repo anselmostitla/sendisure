@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import tokens from '../../constants/tokens.json'
 import { useAccount } from "@/context/account"
 import EscrowFactory from '../../constants/EscrowFactory.json'
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 import Footer from "@/components/footer"
 import { MdClose } from "react-icons/md";
 import erc20 from "../../constants/erc20.json"
@@ -17,11 +17,11 @@ import Link from "next/link"
 
 
 
-
 const Generate = () => {
   const { account, getContract, network } = useAccount()
   const router = useRouter()
-  const host = window.location.host;
+  // const pathName = usePathname()
+  
   
 
   const defaultSocials = [{"name":"facebook", "link":"https://www.facebook.com/anselmostitla", "active":false, "placeholder":"https://..." },
@@ -61,6 +61,10 @@ const Generate = () => {
       uploadUntilRecentSmartContract()
     },sleepingTime)
   },[toggleNewContractCreated])
+
+  useEffect(() => {
+    console.log(window.location.href)
+  })
 
 
   const uploadUntilRecentSmartContract = async() => { 
@@ -237,7 +241,7 @@ const Generate = () => {
         <div className="flex">
           <div className="pl-5 py-4 outline-none bg-white">
             {/* www.sendisure.com/ */}
-            {host}/
+            {window.location.href}
           </div>     
           <input type="text" placeholder="name or brandname or tagline or favorite phrase" onChange={(e) => (setPersonalRoute(e.target.value), checkAvailability(e))}
           className="pl-0 pr-5 py-4 outline-none w-full text-gray-500"/>
