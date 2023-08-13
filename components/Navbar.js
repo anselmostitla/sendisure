@@ -14,7 +14,6 @@ const Navbar = () => {
 
   useEffect(() => {
     getBasics()
-    
   })
 
   const checkNetwork = async() => {
