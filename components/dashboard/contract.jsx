@@ -84,12 +84,11 @@ const Contract = ({contractAddress, currentAccount}) => {
 
   const getBasics = async() => {
     try {
-      console.log("contractAddress at contract: ", contractAddress)
       const escrowContract = await getSmartContract(contractAddress, Escrow.abi, "provider")
       const destinationAddress = await escrowContract.I_RECIPIENT()
       setDestinationAddress(destinationAddress)
 
-      const socialLinks = await escrowContract.getSocialLinks()
+      const socialLinks = await escrowContract?.getSocialLinks()
       setSocialLinks(socialLinks)
 
       let addedTokens = await escrowContract.getTokens()
