@@ -17,9 +17,9 @@ const Generate = () => {
   const { account, getContract, network } = useAccount()
   const router = useRouter()
 
-  const defaultSocials = [{"name":"facebook", "link":"https://www.facebook.com/anselmostitla", "active":false, "placeholder":"https://..." },
+  const defaultSocials = [{"name":"facebook", "link":"", "active":false, "placeholder":"https://..." },
                   {"name":"twitter", "link":"", "active":false, "placeholder":"https://..." },
-                  {"name":"linkedin", "link":"https://www.linkedin.com/in/anselmotitla/", "active":false, "placeholder":"https://..." },
+                  {"name":"linkedin", "link":"", "active":false, "placeholder":"https://..." },
                   {"name":"instagram", "link":"", "active":false, "placeholder":"https://..." },
                   {"name":"tiktok", "link":"", "active":false, "placeholder":"https://..." },
                   {"name":"pinterest", "link":"", "active":false, "placeholder":"https://..." },
@@ -31,7 +31,7 @@ const Generate = () => {
                   {"name":"twitch", "link":"", "active":false, "placeholder":"https://..." },]
 
   const [socials, setSocials] = useState(defaultSocials)
-  const [selectedSocials, setSelectedSocials] = useState([])
+  const [selectedSocials, setSelectedSocials] = useState([])   
   const [personalRoute, setPersonalRoute] = useState("")
   const [isRouteInUse, setIsRouteInUse] = useState()
   const [routeOk, setRouteOk] = useState(true)
@@ -206,26 +206,26 @@ const Generate = () => {
     <div>
       <Navbar />
 
-      <div className="text-5xl font-bold text-center py-10">
+      <div className="lg:text-5xl md:text-4xl text-3xl font-bold text-center py-10">
         WELCOME!
       </div>
-      <div className="text-2xl font-semibold text-center py-5">
+      <div className="text-2xl font-semibold text-center py-5 md:px-0 px-3">
         Two simple steps to start creating your own Smart Contract
       </div>
 
-      <div className="bg-pink-200 space-y-5 w-[70%] flex flex-col mx-auto py-16 px-10 my-10">
-        <div className="text-3xl font-extrabold uppercase text-left pb-5">
+      <div className="bg-pink-200 space-y-5 lg:w-[70%] md:w-[80%] w-[95%] flex flex-col mx-auto py-16 lg:px-10 md:px-5 px-3 my-10">
+        <div className="lg:text-3xl md:text-2xl text-xl font-extrabold uppercase text-left pb-5">
           1.- Choose a personalize route
         </div>
-        <div>          
+        <div className="lg:text-base md:text-sm sm:text-xs md:px-0 px-1">      
           This is the place where your users will find your Smart Contract.
           It can be your name, 
           brandname, tagline or a favorite phrase.
         </div>
 
 
-        <div className="flex">
-          <div className="pl-5 py-4 outline-none bg-white">
+        <div className="flex md:text-base text-xs">
+          <div className="md:pl-5 pl-2 py-4 outline-none bg-white">
             {/* www.sendisure.com/ */}
             https://sendisure.vercel.app/
           </div>     
@@ -242,22 +242,22 @@ const Generate = () => {
       </div>
 
       {/* SOCIAL PROFILES - SOCIAL PROFILES - SOCIAL PROFILES - SOCIAL PROFILES - SOCIAL PROFILES -  */}
-      <div className="bg-pink-200 space-y-5 w-[70%] flex flex-col mx-auto py-16 px-10 my-10">
-        <div className="text-3xl font-extrabold uppercase text-left pb-5">
+      <div className="bg-pink-200 space-y-5 lg:w-[70%] md:w-[80%] w-[95%] flex flex-col mx-auto py-16 lg:px-10 md:px-5 px-2 my-10">
+        <div className="lg:text-3xl md:text-2xl text-xl font-extrabold uppercase text-left pb-5">
           2.- Add at least one social network
         </div>
-        <div>
+        <div className="lg:text-lg md:text-base text-sm">
           In order to create a Smart Contract it is important to include at least one of your social profiles.
         </div>
 
-        <div className="py-5">
+        <div className="py-5 lg:text-lg md:text-base text-sm">
           Please click on each one you want to add.
         </div> 
 
         <div className="flex flex-wrap">
           {
             socials.map((el,i) => (
-              <button className={`border border-red-600 rounded-xl px-3 py-1 mx-1 my-1 ${el.active && `bg-red-500 text-white` }`}
+              <button className={`lg:text-base md:text-sm text-xs border border-red-600 rounded-xl px-3 py-1 mx-1 my-1 ${el.active && `bg-red-500 text-white` }`}
                       onClick={() => selectSocialProfile(i)} key={i}>
                 {el.name}
               </button>
@@ -270,9 +270,9 @@ const Generate = () => {
               socials?.map((el,i) => (
                   el.active && 
                   <div className="flex flex-col py-3 space-y-2" key={i} >
-                    <label>{el.name.toUpperCase()} (please enter your {el.name} profile url)</label>
+                    <label className="lg:text-base md:text-sm text-xs ">{el.name.toUpperCase()} (please enter your {el.name} profile url)</label>
                     <div className="flex">
-                      <input className="outline-none px-5 py-3 flex-1" placeholder={el.placeholder} onChange={(e) => addSocialUrl(e,i)}
+                      <input className="outline-none px-5 py-3 flex-1 lg:text-base md:text-sm text-xs" placeholder={el.placeholder} onChange={(e) => addSocialUrl(e,i)}
                       value={el.link}/>
                       <div className="outline-none text-center bg-white py-3 px-5 items-center" onClick={() => selectSocialProfile(i)}>
                         <MdClose className="text-red-700 text-2xl hover:cursor-pointer" />
@@ -294,7 +294,7 @@ const Generate = () => {
 
       <div className="flex flex-col justify-center mx-auto my-20">
         <div className="flex justify-center">
-          <button className={`bg-red-500 rounded-lg text-white text-xl font-bold py-6 w-[70%]
+          <button className={`bg-red-500 rounded-lg text-white lg:text-xl md:text-lg text-base font-bold lg:py-6 md:py-5 py-4 md:w-[70%] w-[95%]
           hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed`} onClick={() => createContract()} disabled={dots>=0} >
             {account? "Create Smart Contract" : "CONNECT ACCOUNT"}      
           </button>            
@@ -308,7 +308,7 @@ const Generate = () => {
               : (selectedSocials.length == 0 || someSocialFieldMissing ) && <div className="text-green-600">Missing social profile</div>
 
             // else
-            : <div >PLEASE CONNECT YOUR WALLET ACCOUNT</div>
+            : <div className="text-center">PLEASE CONNECT YOUR WALLET ACCOUNT</div>
           }
         </div>
         

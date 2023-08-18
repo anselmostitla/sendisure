@@ -68,11 +68,11 @@ const InsertTokens = ({contractAddress}) => {
 
   return(
     <div>
-      <div className="bg-pink-200 space-y-5 w-[100%] flex flex-col mx-auto p-20 my-1">
-        <div className="text-3xl font-extrabold uppercase text-center">
+      <div className="bg-pink-200 space-y-5 w-[100%] flex flex-col mx-auto lg:p-20 md:p-12 p-6 my-1">
+        <div className="lg:text-3xl md:text-2xl text-xl font-extrabold uppercase text-center">
           Current tokens in which you can receive crypto
         </div>
-        <div className='flex'>
+        <div className='flex mx-auto lg:text-base md:text-sm text-xs'>
           {
             tokensInTheSmartContract?.map((token,i) => (
               <div className='border border-red bg-red-500 text-white px-5 py-2 rounded-xl mx-2' key={i}>
@@ -84,18 +84,18 @@ const InsertTokens = ({contractAddress}) => {
 
 
       </div>
-      <div className="bg-pink-200 space-y-5 w-[100%] flex flex-col mx-auto p-20 my-6">
-        <div className="text-3xl font-extrabold uppercase text-center">
+      <div className="bg-pink-200 space-y-5 w-[100%] flex flex-col mx-auto lg:p-20 md:p-12 p-6 my-6">
+        <div className="lg:text-3xl md:text-2xl text-xl font-extrabold uppercase text-center">
           Do you want to add more tokens to receive more crypto?
         </div>
-        <div className='text-xl pt-10'>
+        <div className='lg:text-xl md:text-lg text-base pt-10'>
           Select at least one token
         </div>
-        <div className="flex flex-wrap py-6">    
+        <div className="flex flex-wrap py-6 lg:text-base md:text-sm text-xs">    
           {
             currentTokens?.map((el,i) => (
               el.isInSmartContract &&
-              <button className= {`rounded-lg border border-red-500 px-5 py-1 mx-3 my-1 ${currentTokens[i].selected && `bg-red-500 text-white `}`} key={i}
+              <button className= {`rounded-lg border border-red-500 px-5 py-1 lg:mx-3 md:mx-2 mx-1 my-1 ${currentTokens[i].selected && `bg-red-500 text-white `}`} key={i}
               onClick={() => selectTokens(i)}>
                 {el.symbol}
               </button>
@@ -109,7 +109,7 @@ const InsertTokens = ({contractAddress}) => {
 
       </div>  
       <div className="flex justify-center my-10">
-        <button className={`bg-red-500 rounded-lg text-white font-bold py-6 w-[100%]
+        <button className={`bg-red-500 rounded-lg text-white font-bold lg:py-6 md:py-5 py-4 w-[100%] lg:text-xl md:text-base text-sm
         hover:bg-red-600`} onClick={() => addTokens()}>
           Add Selected Tokens
         </button>        

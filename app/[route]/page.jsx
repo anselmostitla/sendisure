@@ -7,6 +7,7 @@ import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import { useEffect, useState } from "react";
+import { MdMenu } from 'react-icons/md';
 
 import { useAccount } from "@/context/account";
 import Escrow from '../../constants/Escrow.json'
@@ -40,6 +41,7 @@ const Dashboard = () => {
   const [escrowAddress, setEscrowAddress] = useState()
   const [menu, setMenu] = useState(defaultMenuValues);  
   const [attemps, setAttemps] = useState()
+  const [openMenu, setOpenMenu] = useState(false);   
 
   useEffect(() => {
     uploadUntilAccount()
@@ -72,16 +74,20 @@ const Dashboard = () => {
   }
 
   const getEscrowAddress = async() => {
+    menuValues("contract"); 
+    console.log("menu.contract.display: ", menu.contract.display)
+    if(!window.ethereum) return
     const factory = getSmartContract(EscrowFactory.address, EscrowFactory.abi, "provider")
     const route = params.route
     const escrowAddress = await factory.addressAssociateToRoute(route?.toLowerCase())
+    console.log("escrowAddress at route: ", escrowAddress)
     if(escrowAddress.toString() != '0x0000000000000000000000000000000000000000'){
       const escrowContract = await getSmartContract(escrowAddress,Escrow.abi, "provider")
       const destinationAddress = await escrowContract.I_RECIPIENT()
       setDestinationAddress(destinationAddress)
       setEscrowAddress(escrowAddress)
       setAreEqualAccounts(String(destinationAddress).toLowerCase() == String(account).toLowerCase())
-      menuValues("contract");  
+      // menuValues("contract");  
     } else {
       router.push('/')
     }
@@ -102,15 +108,40 @@ const Dashboard = () => {
     const tempMenu = { ...defaultMenuValues };
     tempMenu[element]["display"] = true;
     setMenu(tempMenu);
+    if(element != "contract") setOpenMenu(!openMenu)
   };
 
   return (
     <div>
       <Navbar />
-      <div className="flex ">
+      <div className="lg:hidden flex justify-between md:px-3 px-2 py-2 lg:text-base md:text-sm text-xs items-center">
+        <div className="flex lg:px-5 md:justify-start md:space-x-5">
+          <div onClick={() => menuValues("contract")} className="hover:cursor-pointer">Smart Contract</div>
+          <div onClick={() => menuValues("tutorialToUsers")} className="md:flex hidden">Tutorials</div>
+          <div className="md:flex hidden">Verify Ownership</div>
+          <div className="md:flex hidden">Add tokens</div>
+          <div className="md:flex hidden">Add social links</div>
+          <div className="md:flex hidden">Docs</div>          
+        </div>
+
+        <div><MdMenu className="md:hidden flex w-6 h-6" onClick={() => setOpenMenu(!openMenu)}/></div>
+      </div>
+      {
+        openMenu && 
+        <div className="absolute right-1 bg-gray-100 p-2 rounded-lg flex flex-col justify-end text-sm md:hidden">
+          <div onClick={() => menuValues("tutorialToUsers")} className="hover:cursor-pointer">Tutorials</div>
+          <div onClick={() => menuValues("ownership")} className="hover:cursor-pointer">Verify Ownership</div>
+          <div onClick={() => menuValues("addTokens")} className="hover:cursor-pointer">Add tokens</div>
+          <div onClick={() => menuValues("addsocialLinks")} className="hover:cursor-pointer">Add social links</div>
+          <div onClick={() => menuValues("tutorialsToPartners")} className="hover:cursor-pointer">Tutorials</div> 
+        </div>
+      }
+
+
+      <div className="flex">
         {/* LEFT SECTION - LEFT SECTION - LEFT SECTION  */}
 
-        <div className="w-72 min-h-screen max-h-screen bg-gray-200 shadow-md mt-1 p-5 space-y-2 pt-10">
+        <div className="w-72  bg-gray-200 shadow-md mt-1 p-5 space-y-2 pt-10 lg:flex lg:flex-col hidden">
           <div
             className={`hover:cursor-pointer hover:bg-gray-300 px-5 py-1 ${
               menu.contract.display && `bg-gray-300`
@@ -161,7 +192,8 @@ const Dashboard = () => {
         </div>
 
         {/* RIGHT SECTION - RIGHT SECTION - RIGHT SECTION  */}
-        <div className="w-[100%] py-20 px-20">
+        
+        <div className="w-[100%] py-20 lg:px-20 md:px-10 px-2">
           {menu.contract.display && (
             <Contract contractAddress={escrowAddress} currentAccount={account} />
           )}
@@ -181,6 +213,7 @@ const Dashboard = () => {
             <TutorialsToPartners contractAddress={escrowAddress} />
           )}
         </div>
+        
       </div>
       <Footer />
     </div>

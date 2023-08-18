@@ -48,16 +48,21 @@ export const AccountProvider = ({children}) => {
 
   const getSmartContract = (_address, _abi, signerOrProvider) => {
     if(!window.ethereum) return
-    const provider = new ethers.providers.Web3Provider(window.ethereum)
-    let contract
-    if(signerOrProvider == "signer") {
-      contract = new ethers.Contract(_address, _abi, provider.getSigner())  
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum)
+      let contract
+      if(signerOrProvider == "signer") {
+        contract = new ethers.Contract(_address, _abi, provider.getSigner())  
+      }
+        
+      else if(signerOrProvider == "provider") {
+        contract = new ethers.Contract(_address, _abi, provider)
+      }
+      return contract      
+    } catch (error) {
+      console.log(error)  
     }
-      
-    else if(signerOrProvider == "provider") {
-      contract = new ethers.Contract(_address, _abi, provider)
-    }
-    return contract
+
   }
 
   const getNetwork = async() => {

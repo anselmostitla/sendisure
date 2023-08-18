@@ -17,6 +17,7 @@ const Navbar = () => {
   })
 
   const checkNetwork = async() => {
+    
     if(EscrowFactory.network != network?.name){
       await window.ethereum.request({
         method:'wallet_switchEthereumChain',
@@ -27,6 +28,7 @@ const Navbar = () => {
   }
 
   const getBasics = async() => {
+    if(!window.ethereum) return
     await checkNetwork()
 
     const contract = await getSmartContract(EscrowFactory.address, EscrowFactory.abi, "provider")
@@ -40,15 +42,15 @@ const Navbar = () => {
     <div className="flex flex-row justify-between shadow-md px-2 py-0 items-center">
       <Link href="/"  className="hover:cursor-pointer flex items-center ">
         <div className="mx-2 text-center py-2">
-          <div className="text-3xl font-extrabold">SENDI<span className="text-red-700">SURE</span> </div>
-          <div className="text-gray-700 text-xs text-right -mr-5">EASY CRYPTO PAYMENTS</div>
+          <div className="lg:text-3xl md:text-2xl text-xl font-extrabold">SENDI<span className="text-red-700">SURE</span> </div>
+          <div className="text-gray-700 text-xs text-right -mr-5 md:uppercase lowercase">EASY CRYPTO PAYMENTS</div>
         </div>
       </Link>
       
       <div className="flex space-x-5">
-        <div className="hover:cursor-pointer">Product</div>
+        {/* <div className="hover:cursor-pointer">Product</div>
         <div className="hover:cursor-pointer">Swap</div>
-        <div className="hover:cursor-pointer">Cross-Chain-Swap</div> 
+        <div className="hover:cursor-pointer">Cross-Chain-Swap</div>  */}
       </div>
       <div className="flex items-center space-x-3">
         {
@@ -62,7 +64,7 @@ const Navbar = () => {
         
         <button onClick={() => connectWallet()}
         className="bg-green-500 border border-green-500 text-white py-2 px-2 rounded-md flex space-x-1 items-center
-        hover:bg-transparent hover:text-green-500">
+        hover:bg-transparent hover:text-green-500 lg:text-base md:text-sm text-xs">
           {
             account
             ? <div className="flex space-x-1 items-center"><div>{network?.name}</div> <div className="text-sm">|</div><div>{account.slice(0,4) + "..." + account.slice(-3)}</div></div> 

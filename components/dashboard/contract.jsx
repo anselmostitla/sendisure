@@ -12,8 +12,8 @@ const Contract = ({contractAddress, currentAccount}) => {
 
   const defaultPlaceholder = "Click to see address"
   
-  const [token, setToken] = useState()
-  const [amount, setAmount] = useState()
+  const [token, setToken] = useState("")
+  const [amount, setAmount] = useState("")
   const [total, setTotal] = useState()
   const [destinationAddress, setDestinationAddress] = useState()
   const [acceptableTokens, setAcceptableTokens] = useState(["-- Select token --"])
@@ -22,37 +22,38 @@ const Contract = ({contractAddress, currentAccount}) => {
   const [toAddress, setToAddress] = useState(defaultPlaceholder)
   const [fromAddress, setFromAddress] = useState(defaultPlaceholder)
   // const [colorAddress, setColorAddress] = useState("text-gray-400")
-  const [decimals, setDecimals] = useState()
+  const [decimals, setDecimals] = useState(0)
   const [isApproved, setIsApproved] = useState()
   const [sleepingTime, setSleepingTime] = useState(1)
   const [toggleChange, setToggleChange] = useState(false)
   const [amountAuthorized, setAmountAuthorized] = useState(0)
   const loadingMsg = Array(5).fill('.')
-  const [position, setPosition] = useState()
+  const [position, setPosition] = useState("")
 
-  const [isSendingTransaction, setIsSendingTransaction] = useState()
+  const [isSendingTransaction, setIsSendingTransaction] = useState(false)
   const [toggleSending, setToggleSending] = useState()
   const [previousNextId, setPreviousNextId] = useState()
   const [toggleHystory, setToggleHystory] = useState(false)
-  const [lastTransactionColor, setLastTransactionColor] = useState()
+  const [lastTransactionColor, setLastTransactionColor] = useState("")
 
 
   useEffect(() => {
     getBasics()
-    window.ethereum.on("accountsChanged", async () => {
-      setFromAddress(defaultPlaceholder)
-      setToAddress(defaultPlaceholder)
-    })
-  },[])
+    if(window.ethereum){
+      window.ethereum.on("accountsChanged", async () => {
+        setFromAddress(defaultPlaceholder)
+        setToAddress(defaultPlaceholder)
+      })      
+    }
+  },[contractAddress, currentAccount])
 
   useEffect(() => {
     setTimeout(() => {
       if( isApproved ){
         if( amountAuthorized >= amount ){
           sendTransaction()
-          // setIsApproved(false)
           setSleepingTime(1)
-          setPosition()
+          setPosition("")
         }else {
           setToggleChange(!toggleChange)
           checkAllowance()
@@ -72,7 +73,7 @@ const Contract = ({contractAddress, currentAccount}) => {
           setToggleHystory(!toggleHystory)
           setIsSendingTransaction(false)
           setSleepingTime(1)
-          setPosition()
+          setPosition("")
           resetInputs()
           setLastTransactionColor('text-red-600')
         }
@@ -82,19 +83,25 @@ const Contract = ({contractAddress, currentAccount}) => {
 
 
   const getBasics = async() => {
-    const escrowContract = await getSmartContract(contractAddress, Escrow.abi, "provider")
-    const destinationAddress = await escrowContract.I_RECIPIENT()
-    setDestinationAddress(destinationAddress)
+    try {
+      console.log("contractAddress at contract: ", contractAddress)
+      const escrowContract = await getSmartContract(contractAddress, Escrow.abi, "provider")
+      const destinationAddress = await escrowContract.I_RECIPIENT()
+      setDestinationAddress(destinationAddress)
 
-    const socialLinks = await escrowContract.getSocialLinks()
-    setSocialLinks(socialLinks)
+      const socialLinks = await escrowContract.getSocialLinks()
+      setSocialLinks(socialLinks)
 
-    let addedTokens = await escrowContract.getTokens()
-    const validTokens = ["--Select token--"]
-    for(let i=0; i<addedTokens.length; i++){
-      validTokens.push(addedTokens[i])
-    }    
-    setAcceptableTokens(validTokens)
+      let addedTokens = await escrowContract.getTokens()
+      const validTokens = ["--Select token--"]
+      for(let i=0; i<addedTokens.length; i++){
+        validTokens.push(addedTokens[i])
+      }    
+      setAcceptableTokens(validTokens)      
+    } catch (error) {
+      console.log(error)
+    }
+
   }
 
   const settingAmounts = (e) => {
@@ -115,7 +122,7 @@ const Contract = ({contractAddress, currentAccount}) => {
       const decimals = await tokenContract.decimals()
       setDecimals(decimals)      
     } else if(token == acceptableTokens[0]){
-      setDecimals()     
+      setDecimals(0)     
     }
   }
 
@@ -183,13 +190,6 @@ const Contract = ({contractAddress, currentAccount}) => {
     return nextId
   }
 
-  // const getAddress = (fromOrTo) => {
-  //   if(fromOrTo == "from"){
-  //     setFromAddress(account)
-  //   }else if (fromOrTo == "to"){
-  //     setToAddress(destinationAddress)
-  //   }
-  // }
 
   const resetInputs = () => {
     setFromAddress(defaultPlaceholder)
@@ -202,13 +202,13 @@ const Contract = ({contractAddress, currentAccount}) => {
   return(
     <div className="">
       <div className=" w-[100%]">
-        <div className="text-5xl font-extrabold text-center bg-blue-100 my-5 py-8">
+        <div className="lg:text-5xl md:text-4xl text-2xl font-extrabold text-center bg-blue-100 my-5 lg:py-8 md:py-5 py-3">
           SENDISURE Smart Contract
         </div>
 
-        <div className="bg-blue-100 my-5 py-5 flex flex-col px-10 space-y-5">
-          <div className="text-3xl font-extrabold mt-10">
-            1.- <span className="text-2xl px-3">FROM and DESTINATION addresses</span>
+        <div className="bg-blue-100 my-5 py-5 flex flex-col lg:px-10 md:px-6 px-4 space-y-5">
+          <div className="lg:text-3xl md:text-2xl text-lg font-extrabold mt-10">
+            1.- <span className="lg:text-2xl md:text-xl text-base lg:px-3 md:px-2 px-1">FROM and DESTINATION addresses</span>
           </div>
           
           <div className="flex flex-col">
@@ -218,8 +218,9 @@ const Contract = ({contractAddress, currentAccount}) => {
               </div>                   
             </div>
 
-            <div className={`py-2 bg-white flex flex-1 outline-none items-center px-5 ${fromAddress != account? "text-gray-400": "text-blue-700"}`} 
-            onClick={() => setFromAddress(account) }>
+            <div className={`py-2 bg-white flex flex-1 outline-none items-center md:px-5 px-3 lg:text-base md:text-sm text-xs overflow-x-auto
+            ${fromAddress != account? "text-gray-400": "text-blue-700"}`} 
+            onClick={() => setFromAddress(account || "Please install metamask") }>
               {fromAddress}   
             </div>
           </div>
@@ -232,17 +233,19 @@ const Contract = ({contractAddress, currentAccount}) => {
               </div>                   
             </div>
 
-            <div className={`py-2 bg-white flex flex-1 outline-none items-center px-5 ${toAddress != destinationAddress? "text-gray-400": "text-green-600"}`} 
-            onClick={() => setToAddress(destinationAddress) }>
-              {/* getAddress("to") */}
+            <div className={`py-2 bg-white flex flex-1 outline-none items-center md:px-5 px-3 lg:text-base md:text-sm text-xs overflow-x-auto
+            ${toAddress != destinationAddress? "text-gray-400": "text-green-600"}`} 
+            onClick={() => setToAddress(destinationAddress || "Please install metamask...") }>
               {toAddress}
             </div>
           </div>
 
           
             
-            <div className={`flex ${( toAddress != defaultPlaceholder && String(currentAccount).toLowerCase()==String(destinationAddress).toLowerCase() )? 'flex': 'invisible'}`}>
-              Upps! Both Addresses are the same... please, change your current connected account.
+            <div className={`flex ${( toAddress != defaultPlaceholder && 
+              String(toAddress).toLowerCase() == String(fromAddress).toLowerCase() &&
+              String(currentAccount).toLowerCase()==String(destinationAddress).toLowerCase() )? 'flex': 'invisible'}`}>
+                Upps! Both Addresses are the same... please, change your current connected account. 
             </div>
           
 
@@ -259,19 +262,19 @@ const Contract = ({contractAddress, currentAccount}) => {
 
         </div>
 
-        <div className="flex flex-col mx-auto bg-blue-100 w-[100%] p-10 rounded-md space-y-5">
+        <div className="flex flex-col mx-auto bg-blue-100 w-[100%] lg:p-10 md:p-6 p-3 rounded-md space-y-5">
 
-          <div className="text-3xl text-left py-10 font-extrabold">
-            2.- <span className="text-2xl px-3">SEND YOUR CRYPTO SECURELY</span>
+          <div className="lg:text-3xl md:text-2xl text-xl text-left py-10 font-extrabold">
+            2.- <span className="lg:text-2xl md:text-xl text-lg px-3">SEND YOUR CRYPTO SECURELY</span>
           </div>    
           
-          <div className="flex flex-col">
-            <label htmlFor="" className="text-2xl ">Token</label>
+          <div className="flex flex-col lg:text-xl md:text-base text-sm">
+            <label htmlFor="" className="">Token</label>
             {!account && 
-              <input type="text" placeholder="--Select token--" className="py-2 px-5 outline-none"/>
+              <input type="text" placeholder="--Select token--" value={token} className="py-2 px-5 outline-none lg:text-base md:text-sm text-xs"/>
             }
             {account &&
-              <select onChange={(e) => settingToken(e)} name="token" id="" value={token} className="py-2 outline-none px-5" >
+              <select onChange={(e) => settingToken(e)} name="token" id="" value={token} className="py-2 outline-none px-5 lg:text-base md:text-sm text-xs" >
                 {acceptableTokens.map((token,i) => (     
                   <option value={token} key={i}>
                     {token}
@@ -283,9 +286,9 @@ const Contract = ({contractAddress, currentAccount}) => {
 
           </div>
 
-          <div className="flex flex-col">  
-            <label htmlFor="" className=" text-2xl flex">Amount <span className="text-sm items-start">*</span> </label>
-            <input type="number" step='any' placeholder="eg. 100" className="py-2 px-5 outline-none" value={amount} onChange={e => settingAmounts(e)} />
+          <div className="flex flex-col lg:text-base md:text-sm text-xs ">  
+            <label htmlFor="" className="  flex">Amount <span className="text-sm items-start">*</span> </label>
+            <input type="number" step='any' placeholder="eg. 100" className="py-2 px-5 outline-none " value={amount} onChange={e => settingAmounts(e)} />
           </div>
 
           <div className={`${Number(amount)? 'hidden':'flex flex-col '}`}>
@@ -298,11 +301,10 @@ const Contract = ({contractAddress, currentAccount}) => {
           </div>
 
 
-          {/* <div className={`w-[80%] mx-auto  ${Number(amount)? 'flex flex-row':'hidden'}`}>
-            <div>Amount to approve to the smart contract</div>
-            <div className="text-red-500 px-1"> { Number(amount)? total : "" } </div> 
-              (Amount + Fee) to the smart contract to transfer on your behalf the total of the selected token
-          </div> */}
+          <div className={`lg:w-[80%] md:w-[90%] w-[100%] mx-auto lg:text-base md:text-sm text-xs ${Number(amount)? 'flex flex-col':'hidden'}`}>
+            {/* <div>Amount to approve to the smart contract</div> */}
+            <div>*To proceed, first you need to approve, on your METAMASK <span className="text-red-500 px-1"> { Number(amount)? total : "" } </span>{token}</div>
+          </div>
 
           <div className={`py-7 flex-col ${(isApproved || isSendingTransaction)? 'flex':'invisible'}`}>
             <div className={`text-2xl justify-center ${(isApproved || isSendingTransaction)? 'flex':'invisible'}`}>
@@ -320,10 +322,11 @@ const Contract = ({contractAddress, currentAccount}) => {
           <button className={`bg-green-500 rounded-md px-5 py-5 text-white text-lg font-semibold 
           ${(isApproved || isSendingTransaction)? 'bg-green-200': 'hover:bg-green-600'}`}
           onClick={() => aprove()} disabled = {isApproved || isSendingTransaction}>
-            Send Tokens
+            {/* Send Tokens */}
+            Approve
           </button>
 
-          <div className="text-center text-xs pt-5">
+          <div className="text-center text-xs pt-5 overflow-x-auto">
             Smart Contract Audited: {contractAddress}
           </div>
 
