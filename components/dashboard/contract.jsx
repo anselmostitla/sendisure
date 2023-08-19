@@ -270,7 +270,9 @@ const Contract = ({contractAddress, currentAccount}) => {
           <div className="flex flex-col lg:text-xl md:text-base text-sm">
             <label htmlFor="" className="">Token</label>
             {!account && 
-              <input type="text" placeholder="--Select token--" value={token} className="py-2 px-5 outline-none lg:text-base md:text-sm text-xs"/>
+              <div className="py-2 px-5 outline-none lg:text-base md:text-sm text-xs text-gray-400 bg-white">
+                 {`"Install or connect to metamask"`}
+              </div>
             }
             {account &&
               <select onChange={(e) => settingToken(e)} name="token" id="" value={token} className="py-2 outline-none px-5 lg:text-base md:text-sm text-xs" >

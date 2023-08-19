@@ -75,12 +75,10 @@ const Dashboard = () => {
 
   const getEscrowAddress = async() => {
     menuValues("contract"); 
-    console.log("menu.contract.display: ", menu.contract.display)
     if(!window.ethereum) return
     const factory = getSmartContract(EscrowFactory.address, EscrowFactory.abi, "provider")
     const route = params.route
     const escrowAddress = await factory.addressAssociateToRoute(route?.toLowerCase())
-    console.log("escrowAddress at route: ", escrowAddress)
     if(escrowAddress.toString() != '0x0000000000000000000000000000000000000000'){
       const escrowContract = await getSmartContract(escrowAddress,Escrow.abi, "provider")
       const destinationAddress = await escrowContract.I_RECIPIENT()
